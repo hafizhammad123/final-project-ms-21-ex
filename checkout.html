@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>faheem</h1>
+
+    <div class="container"></div>
+
+
+   <script>
+let data = JSON.parse(localStorage.getItem('cartItems'));
+console.log(data);
+const div = document.querySelector('.container');
+
+function renderData() {
+    div.innerHTML = "";
+    let totalPayment = 0;
+
+    for (let i = 0; i < data.length; i++) {
+        div.innerHTML += `
+        <div class="card-group">
+          <div class="card">
+            <center><img style="width: 150px;" src="${data[i].image}" class="card-img-top" alt="..."></center>
+            <div class="card-body">
+              <h6 class="card-title">${data[i].title}</h6>
+              <p class="card-text">${data[i].description}</p>
+              <i id="icon" class="fa-solid fa-star"></i>
+              <i id="icon" class="fa-solid fa-star"></i>
+              <i id="icon" class="fa-solid fa-star"></i>
+              <i id="icon" class="fa-solid fa-star"></i>
+              <i class="fa-solid fa-star"></i>
+              <p class="card-text">
+                <h5>Price: <Del id="red"> 300</Del><ins id="green${i}"> (${data[i].price})</ins> </h5>
+                <button onclick="del(${i})" class="bbb">Delete</button>
+                <span id="quantity${i}">1</span>
+                <button onclick="add(${i})">+</button>
+                <button onclick="kam(${i})">-</button>
+              </p>
+            </div>
+          </div>
+        </div>
+        `;
+
+        // Calculate total payment for each item
+        totalPayment += data[i].price * parseInt(document.getElementById(`quantity${i}`).textContent);
+    }
+
+    // Display total payment
+   
+}
+
+function add(index) {
+    var quantityElement = document.getElementById(`quantity${index}`);
+    var currentQuantity = parseInt(quantityElement.textContent);
+
+    // Increment quantity
+    currentQuantity += 1;
+
+    // Update quantity on the page
+    quantityElement.textContent = currentQuantity;
+
+    // Update total price based on quantity
+    updateTotalPrice(index, currentQuantity);
+}
+
+function kam(index) {
+    var quantityElement = document.getElementById(`quantity${index}`);
+    var currentQuantity = parseInt(quantityElement.textContent);
+
+    // Ensure quantity does not go below 1
+    if (currentQuantity > 1) {
+        // Decrement quantity
+        currentQuantity -= 1;
+
+        // Update quantity on the page
+        quantityElement.textContent = currentQuantity;
+
+        // Update total price based on quantity
+        updateTotalPrice(index, currentQuantity);
+    }
+}
+
+function updateTotalPrice(index, quantity) {
+    var totalPriceElement = document.getElementById(`green${index}`);
+    var productPrice = data[index].price;
+
+    // Calculate total price
+    var totalPrice = quantity * productPrice;
+
+    // Update total price on the page
+    totalPriceElement.textContent = `( $${totalPrice})`;
+
+    // Update total payment
+    updateTotalPayment();
+}
+
+function updateTotalPayment() {
+    let totalPayment = 0;
+    for (let i = 0; i < data.length; i++) {
+        totalPayment += data[i].price * parseInt(document.getElementById(`quantity${i}`).textContent);
+    }
+    // Update total payment on the page
+    let totalPaymentElement = document.querySelector('.total-payment');
+    if (!totalPaymentElement) {
+        totalPaymentElement = document.createElement('div');
+        totalPaymentElement.classList.add('total-payment');
+        div.appendChild(totalPaymentElement);
+    }
+    totalPaymentElement.innerHTML = `<div id="gaa">Total Payment: $${totalPayment}</div>`;
+}
+
+// Call renderData function to display initial data
+renderData();
+
+
+
+
+        renderData()
+        function del(index) {
+            data.splice(index, 1);
+            renderData()
+            localStorage.setItem('cartItems',JSON.stringify(data))
+        }
+
+
+   </script>
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
